@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VidkingStream – Premium streaming platform with glassmorphism UI. Browse and stream movies, TV shows, and anime.">
+  <meta name="theme-color" content="#070714">
+  <meta name="color-scheme" content="dark">
+  <title>VidkingStream – Premium Streaming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="app-navbar" id="app-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left">
+        <div class="brand" id="brand-logo">
+          <span class="brand-icon">🎬</span>
+          <span class="brand-text">Vidking<span class="brand-accent">Stream</span></span>
+        </div>
+        <nav class="navbar-nav" id="navbar-nav">
+          <a href="#" class="nav-item active" data-tab="dashboard">Home</a>
+          <a href="#" class="nav-item" data-tab="videos">Explore</a>
+          <a href="#" class="nav-item" data-tab="settings">Settings</a>
+        </nav>
+      </div>
+      <div class="navbar-right">
+        <div class="search-box" id="search-box">
+          <svg class="search-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" class="search-input" placeholder="Search movies, shows, anime..." autocomplete="off" />
+          <div class="search-results-dropdown hidden" id="search-results-dropdown"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Theater Player Section -->
+  <section id="player-section" class="player-section hidden">
+    <div class="player-container">
+      <div class="player-header">
+        <div class="player-meta-info">
+          <span class="now-playing-tag">NOW PLAYING</span>
+          <h2 id="player-title">Movie Title</h2>
+        </div>
+        <button id="close-player-btn" class="close-player-btn" aria-label="Close Player">&times;</button>
+      </div>
+      <div class="player-iframe-wrapper">
+        <div id="vidking-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    
+    <!-- Home / Dashboard Section -->
+    <section class="tab-section active" id="section-dashboard">
+      <!-- Hero Carousel -->
+      <section class="carousel-wrapper" id="carousel-wrapper">
+        <div class="carousel-container" id="hero-carousel">
+          <div class="carousel-slides" id="carousel-slides">
+            <!-- Dynamic Slides -->
+          </div>
+          <button class="carousel-control prev" id="carousel-prev" aria-label="Previous Slide">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="carousel-control next" id="carousel-next" aria-label="Next Slide">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+          </button>
+          <div class="carousel-dots" id="carousel-dots"></div>
+        </div>
+      </section>
+
+      <!-- Continue Watching Section -->
+      <section class="home-shelf hidden" id="continue-watching-shelf">
+        <h2 class="shelf-title">Continue Watching</h2>
+        <div class="horizontal-scroll" id="continue-watching-row"></div>
+      </section>
+
+      <!-- Trending Section -->
+      <section class="home-shelf">
+        <h2 class="shelf-title">🔥 Trending Now</h2>
+        <div class="horizontal-scroll" id="trending-row"></div>
+      </section>
+
+      <!-- TV Shows Section -->
+      <section class="home-shelf">
+        <h2 class="shelf-title">📺 Popular TV Shows</h2>
+        <div class="horizontal-scroll" id="tvshows-row"></div>
+      </section>
+
+      <!-- Anime Section -->
+      <section class="home-shelf">
+        <h2 class="shelf-title">⛩️ Anime</h2>
+        <div class="horizontal-scroll" id="anime-row"></div>
+      </section>
+    </section>
+
+    <!-- Explore / Videos Section -->
+    <section class="tab-section" id="section-videos">
+      <div class="explore-header">
+        <h2 class="explore-title">Explore Catalog</h2>
+        <nav id="category-bar" class="category-nav"></nav>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="tab-section" id="section-settings">
+      <div class="settings-card glass-card">
+        <h2 class="settings-title">⚙️ Platform Settings</h2>
+        <p class="settings-description">Configure your streaming preferences and connection details.</p>
+        <div class="settings-form">
+          <div class="form-group">
+            <label for="site-id-input" class="form-label">Vidking Site ID</label>
+            <input type="text" id="site-id-input" placeholder="Enter your Vidking Site ID" class="form-input" value="12345">
+            <span class="form-help">Enter the unique identifier associated with your Vidking API subscription.</span>
+          </div>
+          <div class="form-group">
+            <label for="tmdb-api-key-input" class="form-label">TMDb API Key (Optional)</label>
+            <input type="password" id="tmdb-api-key-input" placeholder="Enter your TMDb API Key (v3)" class="form-input">
+            <span class="form-help">Add your TMDb API key to search and browse millions of movies, TV shows, and anime. Get a free key at <a href="https://www.themoviedb.org/" target="_blank" style="color:var(--primary); text-decoration:underline;">themoviedb.org</a>.</span>
+          </div>
+          <button class="btn btn-primary" id="save-settings-btn">Save Configurations</button>
+        </div>
+      </div>
+
+      <div class="settings-card glass-card" style="margin-top: 30px;">
+        <h2 class="settings-title">🚀 Instant Play by TMDB ID</h2>
+        <p class="settings-description">Stream any movie or TV show directly by entering its TMDB ID.</p>
+        <div class="settings-form">
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="custom-tmdb-id" class="form-label">TMDB ID</label>
+              <input type="text" id="custom-tmdb-id" placeholder="e.g. 823464" class="form-input">
+            </div>
+            <div class="form-group" style="width:140px;">
+              <label for="custom-media-type" class="form-label">Type</label>
+              <select id="custom-media-type" class="form-input form-select">
+                <option value="movie">Movie</option>
+                <option value="tv">TV Show</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="custom-play-btn">▶ Load and Play</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <button id="close-modal-btn" class="modal-close-btn" aria-label="Close Modal">&times;</button>
+      <div class="modal-grid">
+        <div class="modal-left">
+          <div class="modal-poster-wrapper">
+            <img id="modal-poster" src="" alt="Poster" class="modal-poster-img">
+          </div>
+          <div class="modal-quick-info">
+            <span id="modal-rating" class="modal-rating-badge">⭐ 8.5</span>
+            <span id="modal-year" class="modal-year-badge">2024</span>
+            <span id="modal-type" class="modal-type-badge">Movie</span>
+          </div>
+          <div id="modal-genres" class="modal-genres-list"></div>
+        </div>
+        <div class="modal-right">
+          <h2 id="modal-title" class="modal-title">Movie Title</h2>
+          <p id="modal-desc" class="modal-desc">Movie Description goes here...</p>
+          
+          <div class="player-config-title">Player Configuration</div>
+          <div class="config-grid">
+            <div class="form-group">
+              <label class="form-label">Player Theme Color (Hex)</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="config-color" value="#6366f1" class="color-picker-input">
+                <input type="text" id="config-color-text" value="6366f1" placeholder="e50914" class="form-input color-text-input">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Start Time (seconds)</label>
+              <input type="number" id="config-progress" value="0" min="0" placeholder="e.g. 120" class="form-input">
+            </div>
+            
+            <div class="checkbox-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="config-autoplay" checked> Autoplay
+              </label>
+            </div>
+            
+            <!-- TV Show Specific Settings -->
+            <div id="tv-config-group" class="tv-only-settings hidden">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Season</label>
+                  <select id="config-season" class="form-input form-select"></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Episode</label>
+                  <select id="config-episode" class="form-input form-select"></select>
+                </div>
+              </div>
+              
+              <div class="checkbox-row">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="config-next-episode" checked> Auto Next Episode
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="config-episode-selector" checked> Episode Selector
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="preview-url-wrapper">
+            <label class="form-label">Embed URL Preview</label>
+            <div class="code-preview-box">
+              <code id="embed-url-preview">https://www.vidking.net/embed/movie/823464</code>
+              <button id="copy-embed-btn" class="copy-btn">Copy</button>
+            </div>
+          </div>
+          
+          <button id="play-now-btn" class="btn btn-primary play-btn">▶ Watch Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>&copy; 2026 VidkingStream. All rights reserved. Powered by Vidking Embed.</p>
+  </footer>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
