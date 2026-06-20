@@ -63,7 +63,7 @@ export default function Navbar({
           <div className="navbar-left">
             <div className="brand" onClick={() => setCurrentTab("dashboard")}>
               <span className="brand-icon">🎬</span>
-              <span className="brand-text">Vidking<span className="brand-accent">Anime</span></span>
+              <span className="brand-text">AD<span className="brand-accent">vera</span></span>
             </div>
             <nav className="navbar-nav">
               <a

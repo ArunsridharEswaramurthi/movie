@@ -1374,7 +1374,7 @@ export default function Home() {
       )}
 
       <footer className="app-footer">
-        <p>&copy; 2026 VidkingStream. Curated anime streaming portal powered by Vidking Embed.</p>
+        <p>&copy; 2026 ADvera. Premium streaming portal powered by Vidking Embed.</p>
       </footer>
     </div>
   );
