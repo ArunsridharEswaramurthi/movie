@@ -1,12 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function VideoCard({ video, onSelectVideo }) {
   const [imageError, setImageError] = useState(false);
+  const [fetchedPoster, setFetchedPoster] = useState(null);
+
+  useEffect(() => {
+    // If the local poster is missing or failed to load, pull one from TMDb online
+    if ((!video.poster || imageError) && !fetchedPoster) {
+      const tmdbKey = localStorage.getItem("vidking-tmdb-key") || "44531997758615c4af0f1d7724b5819d";
+      if (tmdbKey && video.title) {
+        const queryUrl = `/api/tmdb/search/multi?query=${encodeURIComponent(video.title)}&include_adult=true`;
+        fetch(queryUrl, {
+          headers: { "x-tmdb-key": tmdbKey }
+        })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data?.results && data.results.length > 0) {
+              // Try to find an exact title match first, fallback to first result
+              const matched = data.results.find(
+                (item) => (item.title || item.name || "").toLowerCase() === video.title.toLowerCase()
+              ) || data.results[0];
+
+              if (matched?.poster_path) {
+                setFetchedPoster(`https://image.tmdb.org/t/p/w500${matched.poster_path}`);
+                setImageError(false);
+              }
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [video.poster, video.title, imageError, fetchedPoster]);
 
   const typeClass = video.type === "tv" ? "tv" : "movie";
   const typeLabel = video.type === "tv" ? "TV" : "Movie";
+  const displayPoster = fetchedPoster || video.poster;
 
   return (
     <div
@@ -14,7 +44,7 @@ export default function VideoCard({ video, onSelectVideo }) {
       onClick={() => onSelectVideo(video)}
     >
       <div className="card-img-container">
-        {imageError || !video.poster ? (
+        {imageError || !displayPoster ? (
           <div
             style={{
               position: "absolute",
@@ -31,7 +61,7 @@ export default function VideoCard({ video, onSelectVideo }) {
           </div>
         ) : (
           <img
-            src={video.poster}
+            src={displayPoster}
             alt={video.title}
             loading="lazy"
             onError={() => setImageError(true)}
