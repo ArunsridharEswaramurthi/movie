@@ -21,7 +21,11 @@ export default function DetailModal({
   const [episodes, setEpisodes] = useState([]);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [isLoadingSeasons, setIsLoadingSeasons] = useState(false);
-  const [selectedServer, setSelectedServer] = useState("vidking");
+  const [selectedServer, setSelectedServer] = useState("vidsrc_to");
+
+  const [seasonDetails, setSeasonDetails] = useState(null);
+  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
+  const [episodeViewMode, setEpisodeViewMode] = useState("detailed");
 
   // Sync color configurations
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function DetailModal({
     if (!video || video.type !== "tv") return;
 
     // Default fallbacks
-    const defaultSeasons = video.seasons || [{ season: 1, episodes: 10 }];
+    const defaultSeasons = video.seasons || [{ season: 1, name: "Season 1", episodes: 10 }];
     setSeasons(defaultSeasons);
 
     const initialSeason = resumeOptions.season || 
@@ -55,7 +59,9 @@ export default function DetailModal({
           if (data.seasons && data.seasons.length > 0) {
             const list = data.seasons.map((s) => ({
               season: s.season_number,
-              episodes: s.episode_count
+              name: s.name,
+              episodes: s.episode_count,
+              overview: s.overview
             }));
             setSeasons(list);
             
@@ -69,6 +75,25 @@ export default function DetailModal({
         .finally(() => setIsLoadingSeasons(false));
     }
   }, [video, tmdbApiKey, resumeOptions]);
+
+  // Fetch season and episode details dynamically
+  useEffect(() => {
+    if (!video || video.type !== "tv" || !tmdbApiKey) {
+      setSeasonDetails(null);
+      return;
+    }
+    
+    setIsLoadingEpisodes(true);
+    fetch(`/api/tmdb/tv/${video.id}/season/${selectedSeason}`, {
+      headers: { "x-tmdb-key": tmdbApiKey }
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        setSeasonDetails(data);
+      })
+      .catch((e) => console.error("Error fetching season details:", e))
+      .finally(() => setIsLoadingEpisodes(false));
+  }, [video, selectedSeason, tmdbApiKey]);
 
   const EPISODES_PER_PAGE = 50;
   const [activePage, setActivePage] = useState(0);
@@ -123,7 +148,6 @@ export default function DetailModal({
     }
   };
 
-  // Generate URL preview
   const generateEmbedUrl = () => {
     if (!video) return "";
     let url = "";
@@ -142,11 +166,89 @@ export default function DetailModal({
         url = `https://www.vidking.net/embed/movie/${video.id}`;
       }
       if (p.length) url += "?" + p.join("&");
-    } else if (selectedServer === "vidsrc") {
+    } else if (selectedServer === "vidsrc" || selectedServer === "vidsrc_xyz") {
       if (video.type === "tv") {
         url = `https://vidsrc.xyz/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
       } else {
         url = `https://vidsrc.xyz/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_to") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.to/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.to/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "rive") {
+      if (video.type === "tv") {
+        url = `https://api.rive.fm/embed/play?type=tv&id=${video.id}&season=${selectedSeason}&episode=${selectedEpisode}`;
+      } else {
+        url = `https://api.rive.fm/embed/play?type=movie&id=${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_cc") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.cc/v2/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.cc/v2/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_net") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.net/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.net/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "embed_rip") {
+      if (video.type === "tv") {
+        url = `https://embed.rip/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://embed.rip/movie/${video.id}`;
+      }
+    } else if (selectedServer === "moviesapi") {
+      if (video.type === "tv") {
+        url = `https://moviesapi.club/tv/${video.id}-${selectedSeason}-${selectedEpisode}`;
+      } else {
+        url = `https://moviesapi.club/movie/${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_me") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.me/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.me/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_pro") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.pro/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.pro/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "embed_su") {
+      if (video.type === "tv") {
+        url = `https://embed.su/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://embed.su/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "autoembed") {
+      if (video.type === "tv") {
+        url = `https://player.autoembed.co/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://player.autoembed.co/movie/${video.id}`;
+      }
+    } else if (selectedServer === "vidsrc_in") {
+      if (video.type === "tv") {
+        url = `https://vidsrc.in/embed/tv/${video.id}/${selectedSeason}/${selectedEpisode}`;
+      } else {
+        url = `https://vidsrc.in/embed/movie/${video.id}`;
+      }
+    } else if (selectedServer === "smashystream") {
+      if (video.type === "tv") {
+        url = `https://embed.smashystream.com/playere.php?tmdb=${video.id}&season=${selectedSeason}&episode=${selectedEpisode}`;
+      } else {
+        url = `https://embed.smashystream.com/playere.php?tmdb=${video.id}`;
+      }
+    } else if (selectedServer === "twoembed") {
+      if (video.type === "tv") {
+        url = `https://www.2embed.cc/embedtv/${video.id}?s=${selectedSeason}&e=${selectedEpisode}`;
+      } else {
+        url = `https://www.2embed.cc/embed/${video.id}`;
       }
     } else if (selectedServer === "superembed") {
       if (video.type === "tv") {
@@ -212,27 +314,33 @@ export default function DetailModal({
               <div className="form-group" style={{ marginBottom: "6px" }}>
                 <label className="form-label">Select Playback Server</label>
                 <div className="server-tabs-container">
-                  <button
-                    type="button"
-                    className={`server-tab-btn ${selectedServer === "vidking" ? "active" : ""}`}
-                    onClick={() => setSelectedServer("vidking")}
-                  >
-                    VidKing (Primary)
-                  </button>
-                  <button
-                    type="button"
-                    className={`server-tab-btn ${selectedServer === "vidsrc" ? "active" : ""}`}
-                    onClick={() => setSelectedServer("vidsrc")}
-                  >
-                    Vidsrc (Backup)
-                  </button>
-                  <button
-                    type="button"
-                    className={`server-tab-btn ${selectedServer === "superembed" ? "active" : ""}`}
-                    onClick={() => setSelectedServer("superembed")}
-                  >
-                    SuperEmbed (Alt)
-                  </button>
+                  {[
+                    { id: "vidsrc_to", name: "VidSrc.to" },
+                    { id: "rive", name: "Rive.fm ✨" },
+                    { id: "vidsrc_cc", name: "VidSrc.cc" },
+                    { id: "vidsrc_me", name: "VidSrc.me" },
+                    { id: "embed_su", name: "Embed.su" },
+                    { id: "vidsrc_in", name: "VidSrc.in 🇮🇳" },
+                    { id: "moviesapi", name: "MoviesAPI" },
+                    { id: "vidsrc_net", name: "VidSrc.net" },
+                    { id: "embed_rip", name: "Embed.rip" },
+                    { id: "smashystream", name: "SmashyStream" },
+                    { id: "twoembed", name: "2Embed" },
+                    { id: "superembed", name: "SuperEmbed" },
+                    { id: "autoembed", name: "AutoEmbed" },
+                    { id: "vidsrc_xyz", name: "VidSrc.xyz" },
+                    { id: "vidsrc_pro", name: "VidSrc.pro" },
+                    { id: "vidking", name: "VidKing" }
+                  ].map((srv) => (
+                    <button
+                      key={srv.id}
+                      type="button"
+                      className={`server-tab-btn ${selectedServer === srv.id || (srv.id === "vidsrc_xyz" && selectedServer === "vidsrc") || (srv.id === "vidsrc_to" && selectedServer === "vidsrc_to") ? "active" : ""}`}
+                      onClick={() => setSelectedServer(srv.id)}
+                    >
+                      {srv.name}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -284,10 +392,11 @@ export default function DetailModal({
               {video.type === "tv" && (
                 <div className="tv-only-settings">
                   <div className="form-group" style={{ marginBottom: "12px" }}>
-                    <label className="form-label">Select Season</label>
-                    <div className="season-tabs-container">
+                    <label className="form-label">Select Season / Arc</label>
+                    <div className="season-tabs-container" style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "6px", flexWrap: "nowrap" }}>
                       {seasons.map((s) => {
                         if (s.season === 0 && seasons.length > 1) return null;
+                        const labelName = s.name ? (s.name.toLowerCase().includes("season") ? s.name : `S${s.season}: ${s.name}`) : `Season ${s.season}`;
                         return (
                           <button
                             key={s.season}
@@ -295,8 +404,9 @@ export default function DetailModal({
                             className={`season-tab-btn ${selectedSeason === s.season ? "active" : ""}`}
                             onClick={() => setSelectedSeason(s.season)}
                             disabled={isLoadingSeasons}
+                            style={{ whiteSpace: "nowrap" }}
                           >
-                            Season {s.season}
+                            {labelName}
                           </button>
                         );
                       })}
@@ -304,8 +414,43 @@ export default function DetailModal({
                   </div>
 
                   <div className="form-group" style={{ marginBottom: "12px" }}>
-                    <label className="form-label">Select Episode</label>
-                    {episodes.length > EPISODES_PER_PAGE && (
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <label className="form-label" style={{ marginBottom: 0 }}>Select Episode</label>
+                      {tmdbApiKey && seasonDetails?.episodes && (
+                        <div style={{ display: "flex", gap: "4px", background: "rgba(255,255,255,0.05)", borderRadius: "4px", padding: "2px" }}>
+                          <button
+                            type="button"
+                            onClick={() => setEpisodeViewMode("detailed")}
+                            style={{
+                              fontSize: "0.7rem",
+                              padding: "4px 8px",
+                              borderRadius: "3px",
+                              background: episodeViewMode === "detailed" ? "var(--primary)" : "transparent",
+                              color: episodeViewMode === "detailed" ? "#fff" : "var(--text-secondary)",
+                              fontWeight: "600"
+                            }}
+                          >
+                            Detailed
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEpisodeViewMode("compact")}
+                            style={{
+                              fontSize: "0.7rem",
+                              padding: "4px 8px",
+                              borderRadius: "3px",
+                              background: episodeViewMode === "compact" ? "var(--primary)" : "transparent",
+                              color: episodeViewMode === "compact" ? "#fff" : "var(--text-secondary)",
+                              fontWeight: "600"
+                            }}
+                          >
+                            Compact
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {(episodeViewMode === "compact" || !seasonDetails?.episodes) && episodes.length > EPISODES_PER_PAGE && (
                       <div className="episode-pages-container">
                         {Array.from({ length: Math.ceil(episodes.length / EPISODES_PER_PAGE) }).map((_, idx) => {
                           const start = idx * EPISODES_PER_PAGE + 1;
@@ -323,18 +468,67 @@ export default function DetailModal({
                         })}
                       </div>
                     )}
-                    <div className="episode-grid">
-                      {episodes.slice(activePage * EPISODES_PER_PAGE, (activePage + 1) * EPISODES_PER_PAGE).map((ep) => (
-                        <button
-                          key={ep}
-                          type="button"
-                          className={`episode-pill ${selectedEpisode === ep ? "active" : ""}`}
-                          onClick={() => setSelectedEpisode(ep)}
-                        >
-                          {ep}
-                        </button>
-                      ))}
-                    </div>
+
+                    {episodeViewMode === "detailed" && seasonDetails?.episodes ? (
+                      <div className="episodes-detailed-list" style={{ display: "flex", flexDirection: "column", gap: "10px", maxHeight: "300px", overflowY: "auto", paddingRight: "6px" }}>
+                        {seasonDetails.episodes.map((ep) => {
+                          const isSelected = selectedEpisode === ep.episode_number;
+                          const stillUrl = ep.still_path ? `https://image.tmdb.org/t/p/w185${ep.still_path}` : null;
+                          return (
+                            <div
+                              key={ep.id}
+                              className={`episode-detail-card ${isSelected ? "active" : ""}`}
+                              onClick={() => setSelectedEpisode(ep.episode_number)}
+                              style={{
+                                display: "flex",
+                                gap: "12px",
+                                padding: "8px",
+                                borderRadius: "8px",
+                                background: isSelected ? "rgba(99, 102, 241, 0.12)" : "rgba(255, 255, 255, 0.02)",
+                                border: isSelected ? "1px solid var(--primary)" : "1px solid rgba(255, 255, 255, 0.05)",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease"
+                              }}
+                            >
+                              {stillUrl ? (
+                                <img
+                                  src={stillUrl}
+                                  alt={ep.name}
+                                  style={{ width: "90px", height: "54px", objectFit: "cover", borderRadius: "4px", flexShrink: 0 }}
+                                  onError={(e) => { e.target.style.display = 'none'; }}
+                                />
+                              ) : (
+                                <div style={{ width: "90px", height: "54px", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "4px", fontSize: "1.2rem", flexShrink: 0 }}>🎬</div>
+                              )}
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "2px" }}>
+                                  <h4 style={{ fontSize: "0.8rem", fontWeight: "600", color: isSelected ? "var(--primary)" : "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", margin: 0 }}>
+                                    Ep {ep.episode_number}: {ep.name}
+                                  </h4>
+                                  <span style={{ fontSize: "0.65rem", color: "var(--text-muted)", marginLeft: "6px", flexShrink: 0 }}>{ep.air_date || ""}</span>
+                                </div>
+                                <p style={{ fontSize: "0.72rem", color: "var(--text-secondary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", margin: 0, lineHeight: "1.3" }}>
+                                  {ep.overview || "No description available for this episode."}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="episode-grid">
+                        {episodes.slice(activePage * EPISODES_PER_PAGE, (activePage + 1) * EPISODES_PER_PAGE).map((ep) => (
+                          <button
+                            key={ep}
+                            type="button"
+                            className={`episode-pill ${selectedEpisode === ep ? "active" : ""}`}
+                            onClick={() => setSelectedEpisode(ep)}
+                          >
+                            {ep}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   {selectedServer === "vidking" && (
@@ -371,7 +565,16 @@ export default function DetailModal({
             
             <button
               className="btn btn-primary play-btn"
-              onClick={() => onPlay(video.title, generateEmbedUrl())}
+              onClick={() => onPlay({
+                video,
+                selectedServer,
+                selectedSeason,
+                selectedEpisode,
+                colorText,
+                autoplay,
+                nextEpisode,
+                episodeSelector
+              })}
             >
               ▶ Watch Now
             </button>

@@ -15,36 +15,50 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "TMDb API Key not configured." }, { status: 401 });
   }
 
-  // Build the target TMDb URL
   const targetPath = path.join("/");
-  const tmdbUrl = new URL(`https://api.themoviedb.org/3/${targetPath}`);
   
-  // Forward all query parameters
-  searchParams.forEach((value, key) => {
-    if (key !== "api_key") {
-      tmdbUrl.searchParams.append(key, value);
-    }
-  });
-  
-  // Append API key
-  tmdbUrl.searchParams.append("api_key", apiKey);
+  // Try api.tmdb.org first, then fall back to api.themoviedb.org
+  const hosts = ["api.tmdb.org", "api.themoviedb.org"];
+  let lastError = null;
 
-  try {
-    const res = await fetch(tmdbUrl.toString(), {
-      next: { revalidate: 3600 } // Cache results for 1 hour
+  for (const host of hosts) {
+    const tmdbUrl = new URL(`https://${host}/3/${targetPath}`);
+    
+    // Forward all query parameters
+    searchParams.forEach((value, key) => {
+      if (key !== "api_key") {
+        tmdbUrl.searchParams.append(key, value);
+      }
     });
     
-    if (!res.ok) {
+    // Append API key
+    tmdbUrl.searchParams.append("api_key", apiKey);
+
+    try {
+      const res = await fetch(tmdbUrl.toString(), {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "application/json"
+        },
+        next: { revalidate: 3600 } // Cache results for 1 hour
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        return NextResponse.json(data);
+      }
+      
+      // If TMDb returns an HTTP error (like 404), return it directly without trying other hosts
       return NextResponse.json(
         { error: `TMDb responded with status ${res.status}` },
         { status: res.status }
       );
+    } catch (e) {
+      console.warn(`Failed to fetch from ${host}:`, e.message || e);
+      lastError = e;
     }
-
-    const data = await res.json();
-    return NextResponse.json(data);
-  } catch (e) {
-    console.error("TMDb Proxy Error:", e);
-    return NextResponse.json({ error: "Failed to fetch from TMDb" }, { status: 500 });
   }
+
+  console.error("TMDb Proxy Error - All hosts failed:", lastError);
+  return NextResponse.json({ error: "Failed to fetch from TMDb", details: lastError?.message || String(lastError) }, { status: 500 });
 }
