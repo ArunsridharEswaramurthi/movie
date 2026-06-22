@@ -121,7 +121,7 @@ export default function Home() {
       }
     } catch (e) {}
     if (!loadedProfiles || loadedProfiles.length === 0) {
-      loadedProfiles = [{ id: "p1", name: "Arun", avatar: "🍿" }];
+      loadedProfiles = [{ id: "p1", name: "Guest", avatar: "🍿" }];
       localStorage.setItem("advera-profiles", JSON.stringify(loadedProfiles));
     }
     setProfiles(loadedProfiles);
@@ -874,7 +874,7 @@ export default function Home() {
     
     // If the active profile was deleted, switch back to p1 (Guest) (Dangling Deleted Profile Bug Fix)
     if (activeProfile && activeProfile.id === id) {
-      const guest = updated.find(p => p.id === "p1") || { id: "p1", name: "Arun", avatar: "🍿" };
+      const guest = updated.find(p => p.id === "p1") || { id: "p1", name: "Guest", avatar: "🍿" };
       setActiveProfile(guest);
       localStorage.setItem("advera-active-profile", JSON.stringify(guest));
     }
