@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Home, Compass, Settings as SettingsIcon, Dices } from "lucide-react";
+import { Search, Home, Compass, Settings as SettingsIcon, Dices, Clock, Heart } from "lucide-react";
 
 export default function Navbar({
   currentTab,
@@ -186,6 +186,13 @@ export default function Navbar({
         >
           <Dices className="mobile-nav-icon" />
           <span className="mobile-nav-label">Surprise</span>
+        </button>
+        <button
+          className={`mobile-nav-item ${currentTab === "history" ? "active" : ""}`}
+          onClick={() => setCurrentTab("history")}
+        >
+          <Clock className="mobile-nav-icon" />
+          <span className="mobile-nav-label">History</span>
         </button>
         <button
           className={`mobile-nav-item ${currentTab === "settings" ? "active" : ""}`}

@@ -1,0 +1,21 @@
+{
+  "name": "ADvera - Premium Streaming",
+  "short_name": "ADvera",
+  "description": "Your premium streaming destination for movies, TV shows, anime, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070714",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "video"],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

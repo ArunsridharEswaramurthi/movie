@@ -35,7 +35,7 @@ export const ANIME_CATALOG = [
     description: "Luffy and his Straw Hat Pirate Crew receive an invitation to the Pirate Festival, a massive world expo of pirates, by pirates, for pirates."
   },
   {
-    id: 361292,
+    id: 374205,
     title: "One Piece Film: Gold",
     type: "movie",
     poster: "https://image.tmdb.org/t/p/w500/8404K9b3H8w6b6w9H8w8B9w8H8.jpg",
@@ -87,7 +87,7 @@ export const ANIME_CATALOG = [
 
   // ===== TAMIL MOVIES & WEB SERIES =====
   {
-    id: 940551,
+    id: 1075794,
     title: "Leo",
     type: "movie",
     poster: "https://image.tmdb.org/t/p/w500/tfw569v37792Qz1K45922Qz1K45.jpg",
@@ -98,7 +98,7 @@ export const ANIME_CATALOG = [
     description: "Parthiban is a mild-mannered cafe owner in Kotagiri, who becomes a local hero after rescue operations. However, his actions draw the attention of a notorious drug cartel who believe he is Leo Das, the estranged son of a powerful gang lord."
   },
   {
-    id: 940721,
+    id: 937020,
     title: "Jailer",
     type: "movie",
     poster: "https://image.tmdb.org/t/p/w500/qy1POlC45e7yXk2aU0sA1yV5jD8.jpg",
@@ -109,7 +109,7 @@ export const ANIME_CATALOG = [
     description: "Muthuvel Pandian, a retired prison jailer, goes on a manhunt to find his son's killers. However, his path leads him into the dark underworld of art smuggling and gang violence."
   },
   {
-    id: 868158,
+    id: 743563,
     title: "Vikram",
     type: "movie",
     poster: "https://image.tmdb.org/t/p/w500/t7Dldw7H0t701hZz16x4k9V7Dld.jpg",
@@ -120,7 +120,7 @@ export const ANIME_CATALOG = [
     description: "A special agent investigates a series of murders committed by a masked group of vigilantes. The investigation leads him to a massive drug cartel and a legendary black-ops commander who went missing years ago."
   },
   {
-    id: 204095,
+    id: 200861,
     title: "Suzhal: The Vortex",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/o7Dldw7H0t701hZz16x4k9V7Dld.jpg",
@@ -132,7 +132,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 8 }]
   },
   {
-    id: 110468,
+    id: 97072,
     title: "Charmsukh",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/8OLspAmOl4IqQTFbi5c5FA4toVl.jpg",
@@ -144,7 +144,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 24 }]
   },
   {
-    id: 104616,
+    id: 99292,
     title: "Kavita Bhabhi",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/8OLspAmOl4IqQTFbi5c5FA4toVl.jpg",
@@ -156,7 +156,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 12 }]
   },
   {
-    id: 115290,
+    id: 125364,
     title: "Palang Tod",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/rtM1bYqvd0QwtKhgLTLn4tUsOz3.jpg",
@@ -192,7 +192,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 6 }]
   },
   {
-    id: 201103,
+    id: 203421,
     title: "Jalebi Bai",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/rtM1bYqvd0QwtKhgLTLn4tUsOz3.jpg",
@@ -216,7 +216,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 8 }]
   },
   {
-    id: 79247,
+    id: 79273,
     title: "Gandii Baat",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/rtM1bYqvd0QwtKhgLTLn4tUsOz3.jpg",
@@ -228,7 +228,7 @@ export const ANIME_CATALOG = [
     seasons: [{ season: 1, episodes: 4 }, { season: 2, episodes: 5 }, { season: 3, episodes: 4 }, { season: 4, episodes: 5 }, { season: 5, episodes: 4 }, { season: 6, episodes: 2 }, { season: 7, episodes: 4 }]
   },
   {
-    id: 102279,
+    id: 102823,
     title: "Mastram",
     type: "tv",
     poster: "https://image.tmdb.org/t/p/w500/8OLspAmOl4IqQTFbi5c5FA4toVl.jpg",
